@@ -383,6 +383,10 @@ pub fn resolve_codex_app_dir_with_saved(
         if is_codex_plus_plus_path(saved_path) {
             // 不 return，继续走自动探测
         } else if let Some(path) = normalize_codex_app_path(saved_path) {
+            // macOS .app bundle 无需含可执行文件即被接受
+            if path.extension() == Some(OsStr::new("app")) {
+                return Some(path);
+            }
             // 路径有效且包含可执行文件，直接返回
             if executable_in_dir(&path).is_some() || is_codex_store_package_dir(&path) {
                 return Some(path);
